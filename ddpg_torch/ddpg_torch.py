@@ -249,6 +249,12 @@ class Agent(object):
         self.actor.train()
         return mu_prime.cpu().detach().numpy()
 
+    def inference(self, observation):
+        self.actor.eval()
+        observation = T.tensor(observation, dtype=T.float).to(self.actor.device)
+        mu = self.actor(observation).to(self.actor.device)
+        return mu.cpu().detach().numpy()
+
     def remember(self, state, action, reward, new_state, done):
         self.memory.store_transition(state, action, reward, new_state, done)
 

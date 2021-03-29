@@ -11,7 +11,7 @@ from scipy import interpolate
 
 class LinkageEnv(gym.Env):
     metadata = {"render.modes": ["human"]}
-    def __init__(self, path: str, w_params: dict, verbose: bool = False):
+    def __init__(self, w_params: dict, verbose: bool = False):
         M, F, m_params = kane(n=w_params["N_LINKS"])
         self.M_func = lambdify(m_params, M)
         self.F_func = lambdify(m_params, F)
@@ -57,6 +57,13 @@ class LinkageEnv(gym.Env):
         self.gpos = np.random.uniform(low=self.low[:self.nlinks], high=self.high[:self.nlinks])
         self.cur_step = 0
         return self._get_obs()
+
+    def inference_reset(self, state, gpos):
+        self.state = state
+        self.gpos = gpos
+        self.cur_step = 0
+        return self._get_obs()
+
 
     def step(self, u):
         self.u = u * self.act_limit
